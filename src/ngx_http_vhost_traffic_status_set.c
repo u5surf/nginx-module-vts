@@ -133,6 +133,22 @@ ngx_http_vhost_traffic_status_set_by_filter_node_member(
     {
         return vtsn->stat_5xx_counter;
     }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v09") == 0)
+    {
+        return vtsn->stat_v09_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v10") == 0)
+    {
+        return vtsn->stat_v10_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v11") == 0)
+    {
+        return vtsn->stat_v11_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v20") == 0)
+    {
+        return vtsn->stat_v20_counter;
+    }
 
 #if (NGX_HTTP_CACHE)
     else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "cacheMaxSize") == 0)

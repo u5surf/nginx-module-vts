@@ -12,6 +12,7 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
+#include <ngx_http_request.h>
 
 #include "ngx_http_vhost_traffic_status_string.h"
 #include "ngx_http_vhost_traffic_status_node.h"
@@ -53,6 +54,13 @@
     else if(s < 400) {n->stat_3xx_counter++;}                                  \
     else if(s < 500) {n->stat_4xx_counter++;}                                  \
     else {n->stat_5xx_counter++;}                                              \
+}
+
+#define ngx_http_vhost_traffic_status_add_pc(s, n) {                           \
+    if(s == NGX_HTTP_VERSION_9) {n->stat_v09_counter++;}                       \
+    else if(s == NGX_HTTP_VERSION_10) {n->stat_v10_counter++;}                 \
+    else if(s == NGX_HTTP_VERSION_11) {n->stat_v11_counter++;}                 \
+    else if(s == NGX_HTTP_VERSION_20) {n->stat_v20_counter++;}                 \
 }
 
 #if (NGX_HTTP_CACHE)
@@ -124,6 +132,18 @@
     if (o->stat_5xx_counter > c->stat_5xx_counter) {                           \
         c->stat_5xx_counter_oc++;                                              \
     }                                                                          \
+    if (o->stat_v09_counter > c->stat_v09_counter) {                           \
+        c->stat_v09_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v10_counter > c->stat_v10_counter) {                           \
+        c->stat_v10_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v11_counter > c->stat_v11_counter) {                           \
+        c->stat_v11_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v20_counter > c->stat_v20_counter) {                           \
+        c->stat_v20_counter_oc++;                                              \
+    }                                                                          \
     if (o->stat_request_time_counter > c->stat_request_time_counter) {         \
         c->stat_request_time_counter_oc++;                                     \
     }                                                                          \
@@ -178,6 +198,18 @@
     }                                                                          \
     if (o->stat_5xx_counter > c->stat_5xx_counter) {                           \
         c->stat_5xx_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v09_counter > c->stat_v09_counter) {                           \
+        c->stat_v09_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v10_counter > c->stat_v10_counter) {                           \
+        c->stat_v10_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v11_counter > c->stat_v11_counter) {                           \
+        c->stat_v11_counter_oc++;                                              \
+    }                                                                          \
+    if (o->stat_v20_counter > c->stat_v20_counter) {                           \
+        c->stat_v20_counter_oc++;                                              \
     }                                                                          \
     if (o->stat_request_time_counter > c->stat_request_time_counter) {         \
         c->stat_request_time_counter_oc++;                                     \

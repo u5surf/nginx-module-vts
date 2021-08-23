@@ -276,6 +276,11 @@ ngx_http_vhost_traffic_status_node_zero(ngx_http_vhost_traffic_status_node_t *vt
     vtsn->stat_4xx_counter = 0;
     vtsn->stat_5xx_counter = 0;
 
+    vtsn->stat_v09_counter = 0;
+    vtsn->stat_v10_counter = 0;
+    vtsn->stat_v11_counter = 0;
+    vtsn->stat_v20_counter = 0;
+
     vtsn->stat_request_time_counter = 0;
     vtsn->stat_request_time = 0;
 
@@ -287,6 +292,12 @@ ngx_http_vhost_traffic_status_node_zero(ngx_http_vhost_traffic_status_node_t *vt
     vtsn->stat_3xx_counter_oc = 0;
     vtsn->stat_4xx_counter_oc = 0;
     vtsn->stat_5xx_counter_oc = 0;
+
+    vtsn->stat_v09_counter_oc = 0;
+    vtsn->stat_v10_counter_oc = 0;
+    vtsn->stat_v11_counter_oc = 0;
+    vtsn->stat_v20_counter_oc = 0;
+
     vtsn->stat_request_time_counter_oc = 0;
     vtsn->stat_response_time_counter_oc = 0;
 
@@ -376,12 +387,15 @@ ngx_http_vhost_traffic_status_node_update(ngx_http_request_t *r,
     ngx_http_vhost_traffic_status_node_t *vtsn, ngx_msec_int_t ms)
 {
     ngx_uint_t status = r->headers_out.status;
+    ngx_uint_t version = r->http_version;
 
     vtsn->stat_request_counter++;
     vtsn->stat_in_bytes += (ngx_atomic_uint_t) r->request_length;
     vtsn->stat_out_bytes += (ngx_atomic_uint_t) r->connection->sent;
 
     ngx_http_vhost_traffic_status_add_rc(status, vtsn);
+
+    ngx_http_vhost_traffic_status_add_pc(version, vtsn);
 
     vtsn->stat_request_time_counter += (ngx_atomic_uint_t) ms;
 
@@ -665,6 +679,22 @@ ngx_http_vhost_traffic_status_node_member(ngx_http_vhost_traffic_status_node_t *
     else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "5xx") == 0)
     {
         return vtsn->stat_5xx_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v09") == 0)
+    {
+        return vtsn->stat_v09_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v10") == 0)
+    {
+        return vtsn->stat_v10_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v11") == 0)
+    {
+        return vtsn->stat_v11_counter;
+    }
+    else if (ngx_http_vhost_traffic_status_node_member_cmp(member, "v20") == 0)
+    {
+        return vtsn->stat_v20_counter;
     }
 
 #if (NGX_HTTP_CACHE)

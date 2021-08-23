@@ -83,6 +83,10 @@ ngx_http_vhost_traffic_status_display_set_server_node(
                       vtsn->stat_3xx_counter,
                       vtsn->stat_4xx_counter,
                       vtsn->stat_5xx_counter,
+                      vtsn->stat_v09_counter,
+                      vtsn->stat_v10_counter,
+                      vtsn->stat_v11_counter,
+                      vtsn->stat_v20_counter,
                       vtsn->stat_cache_miss_counter,
                       vtsn->stat_cache_bypass_counter,
                       vtsn->stat_cache_expired_counter,
@@ -112,6 +116,10 @@ ngx_http_vhost_traffic_status_display_set_server_node(
                       vtsn->stat_3xx_counter_oc,
                       vtsn->stat_4xx_counter_oc,
                       vtsn->stat_5xx_counter_oc,
+                      vtsn->stat_v09_counter_oc,
+                      vtsn->stat_v10_counter_oc,
+                      vtsn->stat_v11_counter_oc,
+                      vtsn->stat_v20_counter_oc,
                       vtsn->stat_cache_miss_counter_oc,
                       vtsn->stat_cache_bypass_counter_oc,
                       vtsn->stat_cache_expired_counter_oc,
@@ -131,6 +139,10 @@ ngx_http_vhost_traffic_status_display_set_server_node(
                       vtsn->stat_3xx_counter,
                       vtsn->stat_4xx_counter,
                       vtsn->stat_5xx_counter,
+                      vtsn->stat_v09_counter,
+                      vtsn->stat_v10_counter,
+                      vtsn->stat_v11_counter,
+                      vtsn->stat_v20_counter,
                       vtsn->stat_request_time_counter,
                       ngx_http_vhost_traffic_status_node_time_queue_average(
                           &vtsn->stat_request_times, vtscf->average_method,
@@ -152,6 +164,10 @@ ngx_http_vhost_traffic_status_display_set_server_node(
                       vtsn->stat_3xx_counter_oc,
                       vtsn->stat_4xx_counter_oc,
                       vtsn->stat_5xx_counter_oc,
+                      vtsn->stat_v09_counter_oc,
+                      vtsn->stat_v10_counter_oc,
+                      vtsn->stat_v11_counter_oc,
+                      vtsn->stat_v20_counter_oc,
                       vtsn->stat_request_time_counter_oc);
 #endif
 
@@ -192,6 +208,10 @@ ngx_http_vhost_traffic_status_display_set_server(ngx_http_request_t *r,
             vtscf->stats.stat_3xx_counter += vtsn->stat_3xx_counter;
             vtscf->stats.stat_4xx_counter += vtsn->stat_4xx_counter;
             vtscf->stats.stat_5xx_counter += vtsn->stat_5xx_counter;
+            vtscf->stats.stat_v09_counter += vtsn->stat_v09_counter;
+            vtscf->stats.stat_v10_counter += vtsn->stat_v10_counter;
+            vtscf->stats.stat_v11_counter += vtsn->stat_v11_counter;
+            vtscf->stats.stat_v20_counter += vtsn->stat_v20_counter;
             vtscf->stats.stat_request_time_counter += vtsn->stat_request_time_counter;
             ngx_http_vhost_traffic_status_node_time_queue_merge(
                 &vtscf->stats.stat_request_times,
@@ -205,6 +225,10 @@ ngx_http_vhost_traffic_status_display_set_server(ngx_http_request_t *r,
             vtscf->stats.stat_3xx_counter_oc += vtsn->stat_3xx_counter_oc;
             vtscf->stats.stat_4xx_counter_oc += vtsn->stat_4xx_counter_oc;
             vtscf->stats.stat_5xx_counter_oc += vtsn->stat_5xx_counter_oc;
+            vtscf->stats.stat_v09_counter_oc += vtsn->stat_v09_counter_oc;
+            vtscf->stats.stat_v10_counter_oc += vtsn->stat_v10_counter_oc;
+            vtscf->stats.stat_v11_counter_oc += vtsn->stat_v11_counter_oc;
+            vtscf->stats.stat_v20_counter_oc += vtsn->stat_v20_counter_oc;
             vtscf->stats.stat_request_time_counter_oc += vtsn->stat_request_time_counter_oc;
 
 #if (NGX_HTTP_CACHE)
@@ -380,6 +404,8 @@ ngx_http_vhost_traffic_status_display_set_upstream_node(ngx_http_request_t *r,
                 vtsn->stat_1xx_counter, vtsn->stat_2xx_counter,
                 vtsn->stat_3xx_counter, vtsn->stat_4xx_counter,
                 vtsn->stat_5xx_counter,
+                vtsn->stat_v09_counter, vtsn->stat_v10_counter,
+                vtsn->stat_v11_counter, vtsn->stat_v20_counter,
                 vtsn->stat_request_time_counter,
                 ngx_http_vhost_traffic_status_node_time_queue_average(
                     &vtsn->stat_request_times, vtscf->average_method,
@@ -413,6 +439,8 @@ ngx_http_vhost_traffic_status_display_set_upstream_node(ngx_http_request_t *r,
                 vtsn->stat_out_bytes_oc, vtsn->stat_1xx_counter_oc,
                 vtsn->stat_2xx_counter_oc, vtsn->stat_3xx_counter_oc,
                 vtsn->stat_4xx_counter_oc, vtsn->stat_5xx_counter_oc,
+                vtsn->stat_v09_counter_oc, vtsn->stat_v10_counter_oc,
+                vtsn->stat_v11_counter_oc, vtsn->stat_v20_counter_oc,
                 vtsn->stat_request_time_counter_oc, vtsn->stat_response_time_counter_oc);
 
     } else {
@@ -746,6 +774,10 @@ u_char
                       vtsn->stat_3xx_counter_oc,
                       vtsn->stat_4xx_counter_oc,
                       vtsn->stat_5xx_counter_oc,
+                      vtsn->stat_v09_counter_oc,
+                      vtsn->stat_v10_counter_oc,
+                      vtsn->stat_v11_counter_oc,
+                      vtsn->stat_v20_counter_oc,
                       vtsn->stat_cache_miss_counter_oc,
                       vtsn->stat_cache_bypass_counter_oc,
                       vtsn->stat_cache_expired_counter_oc,
