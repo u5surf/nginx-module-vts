@@ -72,13 +72,17 @@ Table of Contents
   * [vhost_traffic_status_histogram_buckets](#vhost_traffic_status_histogram_buckets)
   * [vhost_traffic_status_bypass_limit](#vhost_traffic_status_bypass_limit)
   * [vhost_traffic_status_bypass_stats](#vhost_traffic_status_bypass_stats)
+* [Releases](#releases)
 * [See Also](#see-also)
 * [TODO](#todo)
 * [Donation](#donation)
 * [Author](#author)
 
 ## Version
-This document describes nginx-module-vts `v0.1.18` released on 22 Jun 2018.
+
+![GitHub Release](https://img.shields.io/github/v/release/vozlt/nginx-module-vts?display_name=tag&sort=semver)
+
+See the [GitHub Releases](https://github.com/vozlt/nginx-module-vts/releases) for the latest tagged release.
 
 ## Test
 Run `sudo prove -r t` after you have installed this module. The `sudo` is required because
@@ -1736,7 +1740,7 @@ For examples:
 * **vhost_traffic_status_histogram_buckets** `0.005` `0.01` `0.05` `0.1` `0.5` `1` `5` `10`
   * The observe buckets are [5ms 10ms 50ms 1s 5s 10s].
 * **vhost_traffic_status_histogram_buckets** `0.005` `0.01` `0.05` `0.1`
-  * The observe buckets are [5ms 10ms 50ms 1s].
+  * The observe buckets are [5ms 10ms 50ms 100ms].
 
 `Caveats:` By default, if you do not set this directive, the histogram statistics does not work.
 The restored histograms by `vhost_traffic_status_dump` directive have no affected by changes to the buckets
@@ -1807,6 +1811,18 @@ http {
     }
 }
 ```
+
+## Releases
+
+To cut a release, create a changelog entry PR with [git-chglog](https://github.com/git-chglog/git-chglog)
+
+    version="v0.2.0"
+    git checkout -b "cut-${version}"
+    git-chglog -o CHANGELOG.md --next-tag "${version}"
+    git add CHANGELOG.md
+    git-chglog -t .chglog/RELNOTES.tmpl --next-tag "${version}" "${version}" | git commit -F-
+    
+After the PR is merged, create the new tag and release on the [GitHub Releases](https://github.com/vozlt/nginx-module-vts/releases).
 
 ## See Also
 * Stream traffic status
