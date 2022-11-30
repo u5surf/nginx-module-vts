@@ -1,0 +1,38 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: ""
+    validations:
+      required: true
+  - type: textarea
+    id: module-version
+    attributes:
+      label: What is your module version if you know?
+      description:
+      placeholder: 
+      value: ""
+  - type: textarea
+    id: nginx-version
+    attributes:
+      label: What is your nginx -V?
+      description: Can you tell us configure arguments?
+      placeholder: 
+      value: ""
+  - type: textarea
+    id: nginx-conf
+    attributes:
+      label: What is your nginx.conf?
+      description: Can you tell us nginx.conf which can reproduce the issue. It is desirable the minimum one.
+      placeholder: 
+      value: ""
