@@ -193,26 +193,26 @@ static ngx_int_t
 ngx_http_vhost_traffic_status_shm_add_node_upstream(ngx_http_request_t *r,
     ngx_http_vhost_traffic_status_node_t *vtsn, unsigned init)
 {
-    ngx_msec_int_t                             ms;
-    ngx_http_vhost_traffic_status_node_t       ovtsn;
-    ngx_http_vhost_traffic_status_loc_conf_t  *vtscf;
+    ngx_http_vhost_traffic_status_upstream_time_t  upstream_time;
+    ngx_http_vhost_traffic_status_node_t           ovtsn;
+    ngx_http_vhost_traffic_status_loc_conf_t       *vtscf;
 
     vtscf = ngx_http_get_module_loc_conf(r, ngx_http_vhost_traffic_status_module);
 
     ovtsn = *vtsn;
-    ms = ngx_http_vhost_traffic_status_upstream_response_time(r);
+    upstream_time = ngx_http_vhost_traffic_status_upstream_time(r);
 
     ngx_http_vhost_traffic_status_node_time_queue_insert(&vtsn->stat_upstream.response_times,
-                                                         ms);
+                                                         upstream_time.response_msec);
     ngx_http_vhost_traffic_status_node_histogram_observe(&vtsn->stat_upstream.response_buckets,
-                                                         ms);
+                                                         upstream_time.response_msec);
 
     if (init == NGX_HTTP_VHOST_TRAFFIC_STATUS_NODE_NONE) {
-        vtsn->stat_upstream.response_time_counter = (ngx_atomic_uint_t) ms;
-        vtsn->stat_upstream.response_time = (ngx_msec_t) ms;
+        vtsn->stat_upstream.response_time_counter = (ngx_atomic_uint_t) upstream_time.response_msec;
+        vtsn->stat_upstream.response_time = (ngx_msec_t) upstream_time.response_msec;
 
     } else {
-        vtsn->stat_upstream.response_time_counter += (ngx_atomic_uint_t) ms;
+        vtsn->stat_upstream.response_time_counter += (ngx_atomic_uint_t) upstream_time.response_msec;
         vtsn->stat_upstream.response_time = ngx_http_vhost_traffic_status_node_time_queue_average(
                                                 &vtsn->stat_upstream.response_times,
                                                 vtscf->average_method, vtscf->average_period);

@@ -300,10 +300,15 @@ typedef struct {
     ngx_rbtree_node_t                     **node_caches;
 } ngx_http_vhost_traffic_status_loc_conf_t;
 
+typedef struct {
+    ngx_msec_int_t                          response_msec;
+    ngx_msec_int_t                          connect_msec;
+    ngx_msec_int_t                          header_msec;
+} ngx_http_vhost_traffic_status_upstream_time_t;
 
 ngx_msec_t ngx_http_vhost_traffic_status_current_msec(void);
 ngx_msec_int_t ngx_http_vhost_traffic_status_request_time(ngx_http_request_t *r);
-ngx_msec_int_t ngx_http_vhost_traffic_status_upstream_response_time(ngx_http_request_t *r);
+ngx_http_vhost_traffic_status_upstream_time_t ngx_http_vhost_traffic_status_upstream_time(ngx_http_request_t *r);
 
 extern ngx_module_t ngx_http_vhost_traffic_status_module;
 

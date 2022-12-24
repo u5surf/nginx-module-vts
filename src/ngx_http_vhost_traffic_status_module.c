@@ -324,34 +324,47 @@ ngx_http_vhost_traffic_status_request_time(ngx_http_request_t *r)
     return ngx_max(ms, 0);
 }
 
-
-ngx_msec_int_t
-ngx_http_vhost_traffic_status_upstream_response_time(ngx_http_request_t *r)
+ngx_http_vhost_traffic_status_upstream_time_t
+ngx_http_vhost_traffic_status_upstream_time(ngx_http_request_t *r)
 {
     ngx_uint_t                  i;
-    ngx_msec_int_t              ms;
     ngx_http_upstream_state_t  *state;
+    ngx_http_vhost_traffic_status_upstream_time_t  upstream_time;
 
     state = r->upstream_states->elts;
 
     i = 0;
-    ms = 0;
+    upstream_time.response_msec = 0;
+    upstream_time.connect_msec = 0;
+    upstream_time.header_msec = 0;
+
     for ( ;; ) {
         if (state[i].status) {
 
 #if !defined(nginx_version) || nginx_version < 1009001
-            ms += (ngx_msec_int_t)
+            upstream_time.response_msec += (ngx_msec_int_t)
                   (state[i].response_sec * 1000 + state[i].response_msec);
 #else
-            ms += state[i].response_time;
+            upstream_time.response_msec += state[i].response_time;
 #endif
 
+#if !defined(nginx_version) || nginx_version > 1007009
+            upstream_time.header_msec += state[i].header_time;
+#endif
+#if !defined(nginx_version) || nginx_version > 1009000
+            upstream_time.connect_msec += state[i].connect_time;
+#endif
         }
         if (++i == r->upstream_states->nelts) {
             break;
         }
     }
-    return ngx_max(ms, 0);
+
+    upstream_time.response_msec = ngx_max(upstream_time.response_msec, 0);
+    upstream_time.header_msec = ngx_max(upstream_time.header_msec, 0);
+    upstream_time.connect_msec = ngx_max(upstream_time.connect_msec, 0);
+
+    return upstream_time;
 }
 
 
