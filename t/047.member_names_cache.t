@@ -16,7 +16,7 @@ my $configure = `$nginx -V 2>&1` || '';
 plan skip_all => "the cache is not built in: $nginx -V says --without-http-cache"
     if $configure =~ /--without-http-cache/;
 
-plan tests => repeat_each() * 15;
+plan tests => repeat_each() * 21;
 
 add_cleanup_handler(
     sub {
@@ -56,7 +56,44 @@ __DATA__
     qr/X-Miss: 0\b.*X-Bypass: 0\b.*X-Expired: 0\b.*X-Stale: 0\b.*X-Updating: 0\b.*X-Revalidated: 0\b.*X-Hit: 0\b.*X-Scarce: 0\b/s,
 ]
 
-=== TEST 2: the set_by_filter members of a cache zone, and the cache limit members
+=== TEST 2: the cache limit members, which nothing else reaches
+--- http_config
+    vhost_traffic_status_zone;
+    proxy_cache_path /tmp/vts_cache_hit_limit levels=1:2 keys_zone=cache_hit_limit:2m
+                     inactive=1m max_size=4m;
+
+    upstream backend_hit {
+        server 127.0.0.1:1984;
+    }
+
+    server {
+        listen 1984;
+        location / {
+            add_header Cache-Control "max-age=10";
+            return 200 "up";
+        }
+    }
+--- config
+    location /c {
+        proxy_cache cache_hit_limit;
+        proxy_cache_valid 200 10s;
+        proxy_pass http://backend_hit;
+    }
+
+    location /h.txt {
+        vhost_traffic_status_limit_traffic cache_hit:1;
+    }
+--- user_files
+>>> h.txt
+h
+--- post_setup_server_root
+system("rm -rf /tmp/vts_cache_hit_limit");
+--- request eval
+['GET /c', 'GET /h.txt', 'GET /c', 'GET /h.txt', 'GET /c', 'GET /h.txt']
+--- error_code eval
+[200, 200, 200, 200, 200, 503]
+
+=== TEST 3: the set_by_filter members of a cache zone
 --- http_config
     vhost_traffic_status_zone;
     proxy_cache_path cache_one levels=1:2 keys_zone=cache_one:2m inactive=1m max_size=4m;
@@ -115,3 +152,4 @@ read
     qr/\A(?!.*X-Max-Size)/s,
     qr/X-Max-Size: [1-9]\d*.*X-Miss: [1-9]\d*.*X-Hit: [1-9]\d*.*X-Bypass: 0\b.*X-Expired: 0\b.*X-Stale: 0\b.*X-Updating: 0\b.*X-Revalidated: 0\b.*X-Scarce: 0\b/s,
 ]
+
